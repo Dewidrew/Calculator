@@ -9,7 +9,16 @@ import static org.junit.Assert.*;
  */
 public class ExampleUnitTest {
     @Test
-    public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
+    public void test_1_add_1_equals_2(){
+        Calculator calculator = new Calculator();
+        calculator.pressNumber("1");
+        calculator.pressOperator("+");
+        calculator.pressNumber("1");
+        calculator.pressEqual();
+
+        int calculatorResult = calculator.getResult();
+
+        assertEquals(2,calculatorResult);
+
     }
 }

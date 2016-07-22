@@ -1,36 +1,45 @@
 package com.augmentis.ayp.calculator;
 
-import android.support.v7.app.AppCompatActivity;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.StringTokenizer;
 
+import static com.augmentis.ayp.calculator.R.color.colorAccent;
+import static com.augmentis.ayp.calculator.R.color.gray;
+
 public class CalActivity extends AppCompatActivity {
-    //    private Button one,two,three;
-//    private Button four,five,six;
-//    private Button seven,eight,nine;
-//    private Button zero,clear,ans;
-//    private Button plus,minus,divide,multi;
     private TextView main, sub;
-    private String mainSentence;
     private String subSentence;
     private String operand, operator;
-    private SimpleCalculator sc;
+    private Button ansBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cal);
-        sc = new SimpleCalculator();
         operand = "";
         subSentence = "";
         main = (TextView) findViewById(R.id.cal_lcd);
         sub = (TextView) findViewById(R.id.cal_sentence);
+        ansBtn = (Button) findViewById(R.id.cal_ans);
+        ansBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    ansBtn.setBackgroundResource(gray);
+                } else if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    ansBtn.setBackgroundResource(R.color.colorAccent);
+                }
+                return false;
+            }
+        });
+
     }
 
     public String calculate() {
@@ -51,10 +60,10 @@ public class CalActivity extends AppCompatActivity {
                     case "-":
                         ans = ans - b;
                         break;
-                    case "*":
+                    case "\u00D7":
                         ans = ans * b;
                         break;
-                    case "/":
+                    case "\u00F7":
                         ans = ans / b;
                         break;
                     default:
@@ -67,7 +76,21 @@ public class CalActivity extends AppCompatActivity {
         return Integer.toString(ans);
     }
 
-    public void buttonClicked(View view) {
+    public void buttonClicked(final View view) {
+        if(view.getId() != R.id.cal_ans) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        v.setBackgroundResource(gray);
+                    } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        v.setBackgroundColor(Color.parseColor("#808080"));
+                    }
+                    return false;
+                }
+            });
+        }
         if (view.getId() == R.id.cal_one) {
             if (operator != null) {
                 operand = "";
@@ -132,7 +155,7 @@ public class CalActivity extends AppCompatActivity {
             if (operator != null) {
                 subSentence = subSentence.substring(0,subSentence.length()-2) + "+ ";
             }else {
-                subSentence += operand + " + ";
+                subSentence += String.valueOf(Integer.parseInt(operand)) + " + ";
             }
             operator = "+";
             main.setText(operand);
@@ -142,7 +165,7 @@ public class CalActivity extends AppCompatActivity {
             if (operator != null) {
                 subSentence = subSentence.substring(0,subSentence.length()-2) + "- ";
             }else {
-                subSentence += operand + " - ";
+                subSentence += String.valueOf(Integer.parseInt(operand)) + " - ";
             }
             operator = "-";
             main.setText(operand);
@@ -150,21 +173,21 @@ public class CalActivity extends AppCompatActivity {
 
         } else if (view.getId() == R.id.cal_divide) {
             if (operator != null) {
-                subSentence = subSentence.substring(0,subSentence.length()-2) + "/ ";
+                subSentence = subSentence.substring(0,subSentence.length()-2) + "\u00F7 ";
             }else {
-                subSentence += operand + " / ";
+                subSentence += String.valueOf(Integer.parseInt(operand)) + " \u00F7 ";
             }
-            operator = "/";
+            operator = "\u00F7";
             main.setText(operand);
             sub.setText(subSentence);
 
         } else if (view.getId() == R.id.cal_multi) {
             if (operator != null) {
-                subSentence = subSentence.substring(0,subSentence.length()-2) + "* ";
+                subSentence = subSentence.substring(0,subSentence.length()-2) + "\u00D7 ";
             }else {
-                subSentence += operand + " * ";
+                subSentence += String.valueOf(Integer.parseInt(operand)) + " \u00D7 ";
             }
-            operator = "*";
+            operator = "\u00D7";
             main.setText(operand);
             sub.setText(subSentence);
 
